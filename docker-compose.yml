@@ -1,0 +1,17 @@
+services:
+  target:
+    build: .
+    command: python -m uvicorn mock_llm.main:app --host 0.0.0.0 --port 9100
+    ports:
+      - "9100:9100"
+
+  gateway:
+    build: .
+    command: python -m uvicorn gateway.main:app --host 0.0.0.0 --port 8080
+    environment:
+      LSG_BACKEND_URL: http://target:9100/v1
+      LSG_BURST: "100"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - target

@@ -1,0 +1,104 @@
+# 检测规则库：按 OWASP LLM Top 10 2025 编号组织
+# scope: request=请求侧 / response=响应侧 / all=两侧
+- id: PI-001
+  name: 指令覆盖-要求忽略先前指令
+  owasp: LLM01
+  severity: high
+  action: block
+  scope: request
+  description: 典型 prompt injection 话术
+  match:
+    regex: '(忽略|忘掉|忘记).{0,15}(之前|以上|先前|上述|以前).{0,15}(指令|指示|提示|规则|instructions?|prompts?|rules?)|ignore\s+(all|any|the)\s+(previous|prior|above|preceding)\s+(instructions?|prompts?|rules?)'
+
+- id: PI-002
+  name: 越狱角色覆盖
+  owasp: LLM01
+  severity: high
+  action: block
+  scope: request
+  match:
+    keywords: ["dan 模式", "do anything now", "开发者模式", "越狱模式", "无限制模式", "jailbreak"]
+
+- id: PI-003
+  name: 伪系统分隔符
+  owasp: LLM01
+  severity: medium
+  action: block
+  scope: request
+  match:
+    regex: '(#{3,}\s*(system|系统)|<\s*/?\s*(system|sys)\s*>|\[(system|inst)\]|\[\/inst\])'
+
+- id: PI-004
+  name: 编码混淆载荷
+  owasp: LLM01
+  severity: high
+  action: block
+  scope: request
+  description: base64/unicode/rot13 编码的指令，还原后命中即拦
+  match:
+    decode: [base64, unicode_escape, rot13, reverse]
+    regex: '(忽略|忘掉).{0,20}(指令|指示)|(进入|开启).{0,8}(dan|越狱|无限制)|ignore.{0,20}(instruction|previous|directive)|system\s*prompt'
+
+- id: PI-005
+  name: 隐藏指令字符
+  owasp: LLM01
+  severity: high
+  action: block
+  scope: all
+  description: 零宽字符常用于在文档/工具描述里藏指令（知识库投毒、tool poisoning）
+  match:
+    regex: '[\u200b\u200c\u200d\u2060\ufeff]'
+
+- id: SP-001
+  name: 系统提示词抽取
+  owasp: LLM07
+  severity: medium
+  action: block
+  scope: request
+  match:
+    regex: '(系统提示|初始指令|底层指令|你的指令|system\s*prompt).{0,24}(是什么|是啥|显示|打印|重复|输出|what|show|print|repeat|reveal)|repeat\s+the\s+(words|text)\s+above'
+
+- id: AG-001
+  name: 高危工具调用诱导
+  owasp: LLM06
+  severity: high
+  action: block
+  scope: request
+  match:
+    regex: '(群发|批量发送).{0,6}(邮件|短信|通知)|(删除|清空|格式化).{0,4}(数据库|文件|日志|表)|(执行|运行).{0,4}(rm\s|任意命令|shell)'
+
+- id: AG-002
+  name: 数据外发意图
+  owasp: LLM06
+  severity: high
+  action: block
+  scope: request
+  match:
+    regex: '(把|将).{0,15}(内容|数据|结果|回复|密钥).{0,10}(发送|上传|外发|提交|转发).{0,25}(http|邮件|邮箱|服务器|webhook)'
+
+- id: DL-001
+  name: 演示密钥外泄特征
+  owasp: LLM02
+  severity: critical
+  action: block
+  scope: response
+  match:
+    regex: '(SK-DEMO-[A-Za-z0-9]{4,}|INTERNAL_API_KEY)'
+
+- id: DL-002
+  name: 通用密钥样式
+  owasp: LLM02
+  severity: high
+  action: block
+  scope: response
+  match:
+    regex: '(?i)(api[_-]?key|secret|token|password|passwd)\s*[:=]\s*[\x22\x27]?[A-Za-z0-9/_+-]{8,}'
+
+- id: DL-003
+  name: 身份证手机号样式
+  owasp: LLM02
+  severity: high
+  action: block
+  scope: response
+  match:
+    regex: '(\d{17}[\dXx]|1[3-9]\d{9})'
