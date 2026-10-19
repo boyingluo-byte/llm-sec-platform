@@ -2,8 +2,6 @@
 
 一个**可运行、可演示、可量化**的 LLM 安全网关最小系统：OpenAI 兼容代理 + 请求/响应双侧检测 + RAG 靶场 + 红队评测闭环。
 
-[![ci](https://github.com/boyingluo-byte/llm-sec-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/boyingluo-byte/llm-sec-platform/actions/workflows/ci.yml)
-
 > **合规红线**：本项目全部测试仅在本地自建靶机执行，测试数据均为伪造；不会对任何外部系统发起请求。
 
 ## 快速开始
@@ -143,14 +141,13 @@ python -m unittest discover -s tests -v
 
 ## CI 与回归门禁
 
-每次 push / PR 自动执行（`.github/workflows/ci.yml`），每周一还有一次定时红队回归：
+回归门禁已内置在演示脚本中（`scripts/demo.py`）：**检出率 < 100%、出现误报、控制验证未全过，任一发生即使进程非零退出**——防止规则/模型改动引入安全回归。本地随时可验证：
 
-1. **ruff** 代码规范检查
-2. **18 个单元 + 集成测试**
-3. **红队回归门禁**：跑完整攻击套件，**检出率 < 100%、出现误报、控制验证未全过，任一发生即使 CI 失败**——防止规则/模型改动引入安全回归
-4. MCP 工具描述扫描 + 基线报告上传为 artifact
+```bash
+python scripts/demo.py && echo "门禁通过"
+```
 
-也就是说，这个仓库的绿色徽章代表的不只是「测试通过」，而是「安全基线没有劣化」。
+GitHub Actions 工作流（lint + 测试 + 门禁 + 每周定时红队回归）随 CI 授权就位后启用。
 
 ## 检测模型微调（W4，需本地环境）
 
