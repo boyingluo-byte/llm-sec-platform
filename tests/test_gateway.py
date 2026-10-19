@@ -7,7 +7,6 @@ from __future__ import annotations
 import unittest
 from unittest import IsolatedAsyncioTestCase
 
-import httpx
 from httpx import ASGITransport, AsyncClient
 
 from common.config import Settings

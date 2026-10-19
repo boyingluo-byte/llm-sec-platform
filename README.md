@@ -2,6 +2,8 @@
 
 一个**可运行、可演示、可量化**的 LLM 安全网关最小系统：OpenAI 兼容代理 + 请求/响应双侧检测 + RAG 靶场 + 红队评测闭环。
 
+[![ci](https://github.com/boyingluo-byte/llm-sec-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/boyingluo-byte/llm-sec-platform/actions/workflows/ci.yml)
+
 对应目标 JD（AI 安全研发工程师：检测规则研发 / 小模型工程落地 / 调用链路管控 / 高并发后端 / 攻防跟踪产品化）。
 
 > **合规红线**：本项目全部测试仅在本地自建靶机执行，测试数据均为伪造；不会对任何外部系统发起请求。
@@ -141,6 +143,28 @@ python -m unittest discover -s tests -v
 ```
 
 18 个用例覆盖：规则正反例、编码还原链、作用域过滤、认证/限流/熔断、双侧检测、流式拦截、跨租户隔离、端到端评测指标。
+
+## CI 与回归门禁
+
+每次 push / PR 自动执行（`.github/workflows/ci.yml`），每周一还有一次定时红队回归：
+
+1. **ruff** 代码规范检查
+2. **18 个单元 + 集成测试**
+3. **红队回归门禁**：跑完整攻击套件，**检出率 < 100%、出现误报、控制验证未全过，任一发生即使 CI 失败**——防止规则/模型改动引入安全回归
+4. MCP 工具描述扫描 + 基线报告上传为 artifact
+
+也就是说，这个仓库的绿色徽章代表的不只是「测试通过」，而是「安全基线没有劣化」。
+
+## 检测模型微调（W4，需本地环境）
+
+`detector/train.py` 是微调脚本脚手架：用红队用例库构造正样本、良性用例构造负样本，微调 `bert-base-chinese` 二分类器。需要 GPU/CPU + transformers 环境（见 `requirements-ml.txt`，约 2GB 依赖）：
+
+```bash
+pip install -r requirements-ml.txt
+python detector/train.py --output detector/model/finetuned
+```
+
+微调产物实现 `detector/model_base.py` 的 `ModelDetector` 接口后即可接入引擎（规则层 + 模型层 blended 判定）。
 
 ## 已知边界（诚实清单）
 

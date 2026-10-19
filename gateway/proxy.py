@@ -7,7 +7,7 @@ from typing import AsyncIterator, Dict, Optional
 import httpx
 
 from common.schemas import ChatCompletionRequest
-from detector.engine import DetectionEngine, Hit
+from detector.engine import DetectionEngine
 
 
 class BackendClient:

@@ -21,7 +21,7 @@ from common.schemas import (
     security_error,
 )
 from detector.dsl import load_rules
-from detector.engine import DetectionEngine, Hit
+from detector.engine import DetectionEngine
 from .audit import AuditLogger
 from .auth import Authenticator
 from .proxy import BackendClient, guarded_stream

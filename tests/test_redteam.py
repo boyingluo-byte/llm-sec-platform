@@ -6,7 +6,6 @@ import unittest
 from pathlib import Path
 from unittest import IsolatedAsyncioTestCase
 
-import httpx
 from httpx import ASGITransport, AsyncClient
 
 from common.config import Settings

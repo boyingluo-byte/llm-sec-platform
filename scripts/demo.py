@@ -62,6 +62,17 @@ async def main() -> None:
     await gw_client.aclose()
     await tgt_client.aclose()
 
+    # 回归门禁：检出率未满、有误报、控制验证未全过 -> 非零退出（CI 卡点）
+    gate_failed = (
+        summary.detection_rate < 1.0
+        or summary.benign_blocked > 0
+        or summary.control_passed != summary.control_total
+    )
+    if gate_failed:
+        print("\n[门禁未通过] 安全基线劣化：检出率/误报率/控制验证 存在回归")
+        sys.exit(1)
+    print("\n[门禁通过] 检出率 100% / 误报 0 / 控制验证全过")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

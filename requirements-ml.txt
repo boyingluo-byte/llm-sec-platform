@@ -1,0 +1,8 @@
+# W4 检测模型微调依赖（约 2GB，需本地/CI 有网络环境安装）
+# 用法: pip install -r requirements-ml.txt && python detector/train.py
+torch>=2.2
+transformers>=4.41
+datasets>=2.18
+evaluate>=0.4
+accelerate>=0.27
+scikit-learn>=1.4
