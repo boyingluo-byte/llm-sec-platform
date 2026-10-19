@@ -4,8 +4,6 @@
 
 [![ci](https://github.com/boyingluo-byte/llm-sec-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/boyingluo-byte/llm-sec-platform/actions/workflows/ci.yml)
 
-对应目标 JD（AI 安全研发工程师：检测规则研发 / 小模型工程落地 / 调用链路管控 / 高并发后端 / 攻防跟踪产品化）。
-
 > **合规红线**：本项目全部测试仅在本地自建靶机执行，测试数据均为伪造；不会对任何外部系统发起请求。
 
 ## 快速开始
@@ -134,7 +132,7 @@ llm-sec-platform/
 2. **规则先行、模型兜底**：规则毫秒级快筛，模型精判变形未知；模型层接口已预留（`detector/model_base.py`），微调 BERT 实现同一接口即可热插拔
 3. **流式不破坏体验**：SSE chunk 级旁路扫描，命中即截断，业务侧无感知
 4. **红队用例一鱼两吃**：用例库既是攻击素材也是检测引擎的评测集，误报样本回流成负样本养料
-5. **一切指标可量化**：检出率/误报率/时延全部有基线报告，判定用规则 + 成功指标，面试可复现
+5. **一切指标可量化**：检出率/误报率/时延全部有基线报告，判定用规则 + 成功指标，全程可复现
 
 ## 测试
 
