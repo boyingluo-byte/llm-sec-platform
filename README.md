@@ -109,7 +109,6 @@ llm-sec-platform/
 │   ├── demo.py         # 一键演示（进程内）
 │   └── mcp_scan.py     # MCP 工具描述静态扫描（tool poisoning / rug pull）
 ├── tests/              # 18 个测试（unittest 实现，pytest 可收集）
-└── docs/               # 项目方案、技术栈详解、可落地范围
 ```
 
 ## 已覆盖的能力（对照七层防护框架）
@@ -124,7 +123,7 @@ llm-sec-platform/
 | 数据层 | RAG 跨租户检索隔离、入库文档投毒扫描 | 分类分级为演示级 |
 | 运营审计层 | 全链路审计 + TraceID、告警熔断、红队回归 | CI 门禁为路线图 |
 
-明确的路线图项（依赖企业基础设施，不装进 MVP）：SSO/EDR/mTLS、RLHF 安全对齐、UEBA、事实校验、国密 KMS、多 Agent 协同安全。详见 `docs/可落地范围-从七层框架到MVP.md`。
+明确的路线图项（依赖企业基础设施，不装进 MVP）：SSO/EDR/mTLS、RLHF 安全对齐、UEBA、事实校验、国密 KMS、多 Agent 协同安全——这些的共性是依赖企业级基础设施或长期数据积累，单机作品集环境无法真实复现，因此明确划在范围外，而不是做演示级摆设。
 
 ## 关键设计
 
